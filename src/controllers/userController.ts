@@ -4,13 +4,13 @@ import { connect } from 'mongoose';
 import  { User } from "../models/Users"
 
 
-const getUsers = async(req:Request, res: Response)=>{
+export const getUsers = async(req:Request, res: Response)=>{
 
     const allUsers = await User.find({})
 
     if(allUsers){
         return res.json({
-            "msg":"false",
+            "msg":"true",
             "users":allUsers
         })
     }else{
@@ -21,43 +21,50 @@ const getUsers = async(req:Request, res: Response)=>{
     }
 }
 
-const registerUser  = async(req: Request, res:Response) =>
+export const registerUser  = async(req: Request, res:Response) =>
 {
     // await connect('mongodb://127.0.0.1:27017/typescript');
+    try {
 
-    const {name, email, password} = req.body;
+        const {name, email, password} = req.body;
 
-    if(!(name && email && password)){
+        if(!(name && email && password)){
+            return res.json({
+                "message": "All fields are required"
+        })
+        }
+
+        const newUser = await User.create({
+            name : name,
+            email : email,
+            password : password
+        })
+
+        console.log(newUser)
+
+        if(newUser){
+            return res.json({
+                "message": "Registration Successful"
+        })
+
+        }else{
+            return res.json({
+                "message": "Registration failed"
+        })
+
+        }
+
+        
+    } catch (error) {
         return res.json({
-            "message": "All fields are required"
+            "message": error
     })
-        console.log("All fields are required")
-    }
-
-    const newUser = await User.create({
-        name : name,
-        email : email,
-        password : password
-    })
-
-    console.log(newUser)
-
-    if(newUser){
-        return res.json({
-            "message": "Registration Successful"
-    })
-
-    }else{
-        return res.json({
-            "message": "Registration failed"
-    })
-
     }
  
 }
 // registerUser('Bill', 'bill@initech.com', "1234").catch(err => console.log(err));
 
-const updateUser = async(req: Request, res:Response) =>
+export const updateUser = async(req: Request, res:Response) =>
 {
     const {name, email, password} = req.body;
 
@@ -91,7 +98,7 @@ const updateUser = async(req: Request, res:Response) =>
 // updateUser('billy', 'bill@initech.co').catch(err => console.log(err));
 
 
-const deleteUser = async(req: Request, res:Response) =>
+export const deleteUser = async(req: Request, res:Response) =>
 {
     const {email} = req.body;
 
@@ -123,6 +130,7 @@ const deleteUser = async(req: Request, res:Response) =>
 
 // deleteUser('bill@initech.com').catch(err => console.log(err));
 
+// export default {registerUser, getUsers}
 
 
 

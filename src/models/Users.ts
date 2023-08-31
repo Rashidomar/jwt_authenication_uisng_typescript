@@ -14,7 +14,6 @@ interface IUser {
     password : string,
   }
 
-
 const schemaUser = new Schema<IUser>({
 
     name: { 
@@ -35,4 +34,3 @@ const schemaUser = new Schema<IUser>({
 
 export let User = model<IUser>('User', schemaUser)
 
-// export default {User}
