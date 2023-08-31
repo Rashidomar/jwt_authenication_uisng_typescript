@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userLogin = void 0;
-const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const Users_1 = require("../models/Users");
 const SECRET_KEY = 'secret-key';
@@ -31,16 +30,25 @@ const userLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 "msg": "Wrong Email..:)"
             });
         }
-        const comfrmPassword = yield bcrypt_1.default.compare(password, findUser.password);
-        if (!comfrmPassword) {
+        if (findUser.password !== password) {
+            // console.log(findUser.password, password)
             return res.json({
                 "msg": "Wrong Password..:)"
             });
         }
-        const token = yield jsonwebtoken_1.default.sign({ user_id: findUser._id }, SECRET_KEY, { expiresIn: "2h" });
-        console.log(token);
-        res.cookie("jwt", token);
-        res.status(200).json(findUser);
+        // const comfrmPassword = await bcrypt.compare(password, findUser.password)
+        // if(!comfrmPassword){
+        //     return res.json({
+        //         "msg": "Wrong Password..:)"
+        //     })
+        // }   
+        const accessToken = yield jsonwebtoken_1.default.sign({ user_id: findUser._id }, SECRET_KEY, { expiresIn: "2h" });
+        res.cookie('accessToken', accessToken);
+        res.cookie('logged_in', true, { httpOnly: false });
+        return res.status(200).json({
+            'user': findUser,
+            'token': accessToken,
+        });
     }
     catch (error) {
         res.json({

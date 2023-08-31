@@ -1,5 +1,7 @@
 import express, { Express, Request, Response } from "express";
+import { verifyToken} from "./middleware/auth"
 import userRouter from "./routes/userRoute";
+import authRouter from "./routes/authRoute"
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -13,11 +15,12 @@ app.use(
   cors({credentials: true, })
 );
 
-app.get('/', (req:Request, res:Response)=>{
+app.get('/welcome', verifyToken, (req:Request, res:Response)=>{
     res.send("This is a typescript test");
 })
 
 app.use(userRouter)
+app.use(authRouter)
 
 
 
