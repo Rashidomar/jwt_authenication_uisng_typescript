@@ -24,19 +24,19 @@ export const userLogin = async(req: Request, res: Response)=>{
                 "msg": "Wrong Email..:)"
             })
         }
-        if(findUser.password !== password){
-            // console.log(findUser.password, password)
-             return res.json({
-                "msg": "Wrong Password..:)"
-            })
-        } 
-        // const comfrmPassword = await bcrypt.compare(password, findUser.password)
-
-        // if(!comfrmPassword){
-        //     return res.json({
+        // if(findUser.password !== password){
+        //     // console.log(findUser.password, password)
+        //      return res.json({
         //         "msg": "Wrong Password..:)"
         //     })
-        // }   
+        // } 
+        const comfrmPassword = await bcrypt.compare(password, findUser.password)
+
+        if(!comfrmPassword){
+            return res.json({
+                "msg": "Wrong Password..:)"
+            })
+        }   
         const accessToken = await jwt.sign(
             { user_id: findUser._id},
             SECRET_KEY,

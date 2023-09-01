@@ -1,4 +1,5 @@
 import { Response, Request } from "express"
+import bcrypt from "bcrypt"
 import { connect } from 'mongoose';
 
 import  { User } from "../models/Users"
@@ -34,10 +35,12 @@ export const registerUser  = async(req: Request, res:Response) =>
         })
         }
 
+        const hashPassword : string = await bcrypt.hash(password, 10)
+
         const newUser = await User.create({
             name : name,
             email : email,
-            password : password
+            password : hashPassword
         })
 
         console.log(newUser)
