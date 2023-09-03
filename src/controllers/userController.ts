@@ -1,28 +1,34 @@
-import { Response, Request } from "express"
+import { Response, Request, NextFunction } from "express"
 import bcrypt from "bcrypt"
-import { connect } from 'mongoose';
+import { AppError, statusCodes } from "../utils/errorhandler"
+// import { connect } from 'mongoose';
 
 import  { User } from "../models/Users"
 
 
-export const getUsers = async(req:Request, res: Response)=>{
+export const getUsers = async(req:Request, res: Response, next :NextFunction)=>{
+    try {
+        const allUsers = await User.find({})
 
-    const allUsers = await User.find({})
+        if(allUsers){
+            return res.json({
+                "msg":"true",
+                "users":allUsers
+            })
+        }
 
-    if(allUsers){
-        return res.json({
-            "msg":"true",
-            "users":allUsers
-        })
-    }else{
-        return res.json({
-            "msg":"false",
-            "users": null
-        })
-    }
+        return next(new AppError({
+            message:"An error occured..",
+            statusCode:statusCodes.NO_CONTENT,
+        }))
+        
+    } catch (error: any ) {
+        next(error)
+        
+        }    
 }
 
-export const registerUser  = async(req: Request, res:Response) =>
+export const registerUser  = async(req: Request, res:Response, next :NextFunction) =>
 {
     // await connect('mongodb://127.0.0.1:27017/typescript');
     try {
@@ -30,9 +36,10 @@ export const registerUser  = async(req: Request, res:Response) =>
         const {name, email, password} = req.body;
 
         if(!(name && email && password)){
-            return res.json({
-                "message": "All fields are required"
-        })
+            return next(new AppError({
+                message:"All fields are required",
+                statusCode:statusCodes.BAD_REQUEST,
+            }))
         }
 
         const hashPassword : string = await bcrypt.hash(password, 10)
@@ -46,88 +53,96 @@ export const registerUser  = async(req: Request, res:Response) =>
         console.log(newUser)
 
         if(newUser){
-            return res.json({
-                "message": "Registration Successful"
-        })
-
-        }else{
-            return res.json({
-                "message": "Registration failed"
-        })
-
+            return res.status(201).json({
+                message: "Registration Successful", 
+                status: 'success',
+                data: newUser
+            })
         }
 
-        
-    } catch (error) {
-        return res.json({
-            "message": error
-    })
+        return next(new AppError({
+            message:"Registration Successful",
+            statusCode:statusCodes.NO_CONTENT,
+        }))
+
+    } catch (error : any) {
+        next(error)
     }
  
 }
 // registerUser('Bill', 'bill@initech.com', "1234").catch(err => console.log(err));
 
-export const updateUser = async(req: Request, res:Response) =>
+export const updateUser = async(req: Request, res:Response, next :NextFunction) =>
 {
-    const {name, email, password} = req.body;
+    try {
+        const {name, email, password} = req.body;
 
-    if(!(name && email)){
-        return res.json({
-            "message": "All fields are required"
-    })
+        if(!(name && email)){
+            return next(new AppError({
+                message:"field is required",
+                statusCode:statusCodes.BAD_REQUEST,
+            }))
+        }
+    
+        const updateUser = await User.findOneAndUpdate(
+            {email : email},
+            {name : name}
+            )
+    
+        console.log(updateUser)
+    
+        if(updateUser){
+            return res.status(201).json({
+                "message": "Update Successful"
+            })
+        }
+        return next(new AppError({
+            message:"Registration Successful",
+            statusCode:statusCodes.NO_CONTENT,
+        }))
+     
+        
+    } catch (error:any) {
+        next(error)
     }
-
-    const updateUser = await User.findOneAndUpdate(
-        {email : email},
-        {name : name}
-        )
-
-    console.log(updateUser)
-
-    if(updateUser){
-        return res.json({
-            "message": "Registration Successful"
-    })
-
-    }else{
-        return res.json({
-            "message": "Registration failed"
-    })
-
-    }
- 
+   
 }
 
 // updateUser('billy', 'bill@initech.co').catch(err => console.log(err));
 
 
-export const deleteUser = async(req: Request, res:Response) =>
+export const deleteUser = async(req: Request, res:Response, next :NextFunction) =>
 {
-    const {email} = req.body;
+    try {
+        const {email} = req.body;
 
     if(!(email)){
-        return res.json({
-            "message": "All fields are required"
-    })
+        return next(new AppError({
+            message:"All fields are required",
+            statusCode:statusCodes.BAD_REQUEST,
+        }))
     }
 
-    const updateUser = await User.findOneAndDelete(
+    const deleteUser = await User.findOneAndDelete(
         {email : email},
         )
 
-    console.log(updateUser)
+    console.log(deleteUser)
 
-    if(updateUser){
-        return res.json({
+    if(deleteUser){
+        return res.status(201).json({
             "message": "Registration Successful"
-    })
-
-    }else{
-        return res.json({
-            "message": "Registration failed"
-    })
-
+        })
     }
+    return next(new AppError({
+        message:"Registration Successful",
+        statusCode:statusCodes.NO_CONTENT,
+    }))
+        
+    } catch (error) {
+        next(error)
+    }
+    
  
 }
 

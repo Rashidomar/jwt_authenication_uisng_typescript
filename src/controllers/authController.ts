@@ -1,12 +1,10 @@
-import { Response, Request } from "express"
+import { Response, Request, NextFunction } from "express"
 import bcrypt from "bcrypt"
-import jwt, { Secret  } from "jsonwebtoken"
-
+import { createToken } from "../utils/helpers"
+import { AppError, statusCodes } from "../utils/errorhandler"
 import  { User } from "../models/Users"
 
-const SECRET_KEY: Secret = 'secret-key';
-
-export const userLogin = async(req: Request, res: Response)=>{
+export const userLogin = async(req: Request, res: Response, next: NextFunction)=>{
 
     try {
         const {email, password} = req.body;
@@ -20,29 +18,23 @@ export const userLogin = async(req: Request, res: Response)=>{
         const findUser = await User.findOne({email:email});
 
         if(!findUser){
-            return res.json({
-                "msg": "Wrong Email..:)"
-            })
+            return next(new AppError({
+                statusCode:statusCodes.UNAUTHORIZED,
+                message: "Incorrect email."
+            }));
+
         }
-        // if(findUser.password !== password){
-        //     // console.log(findUser.password, password)
-        //      return res.json({
-        //         "msg": "Wrong Password..:)"
-        //     })
-        // } 
-        const comfrmPassword = await bcrypt.compare(password, findUser.password)
 
-        if(!comfrmPassword){
-            return res.json({
-                "msg": "Wrong Password..:)"
-            })
-        }   
-        const accessToken = await jwt.sign(
-            { user_id: findUser._id},
-            SECRET_KEY,
-            {expiresIn: "2h"}
-        )
+        const confirmPassword = await bcrypt.compare(password, findUser.password)
 
+        if(!confirmPassword){
+            return next(new AppError({
+                statusCode:statusCodes.UNAUTHORIZED,
+                message: "Wrong Password..:)"
+            }));
+        }  
+        const accessToken = await createToken(findUser._id);
+    
         res.cookie('accessToken', accessToken);
         res.cookie('logged_in', true, {httpOnly: false});
         return res.status(200).json({
@@ -51,12 +43,27 @@ export const userLogin = async(req: Request, res: Response)=>{
         });
 
         
-    } catch (error) {
-        res.json({
-            "msg":error
-        });
+    } catch (error:any) {
+        next(error)
 
     }
 }
+
+export const userLogout = async(req: Request, res: Response, next: NextFunction)=>{
+
+    try {
+        res.cookie('accessToken', "");
+        res.cookie('logged_in', false, {httpOnly: false});
+        return res.status(200).json({
+           'user' : null,
+           'token': "",
+        });
+        
+    } catch (error:any) {
+        next(error)
+    }
+
+} 
+
 
 
