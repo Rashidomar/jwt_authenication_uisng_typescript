@@ -32,15 +32,14 @@ export const registerUser  = async(req: Request, res:Response, next :NextFunctio
 {
     // await connect('mongodb://127.0.0.1:27017/typescript');
     try {
-
         const {name, email, password} = req.body;
 
-        if(!(name && email && password)){
-            return next(new AppError({
-                message:"All fields are required",
-                statusCode:statusCodes.BAD_REQUEST,
-            }))
-        }
+        // if(!(name && email && password)){
+        //     return next(new AppError({
+        //         message:"All fields are required",
+        //         statusCode:statusCodes.BAD_REQUEST,
+        //     }))
+        // }
 
         const hashPassword : string = await bcrypt.hash(password, 10)
 

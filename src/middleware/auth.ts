@@ -1,7 +1,6 @@
 import {Response,  Request, NextFunction} from "express"
 import  jwt, {Secret} from "jsonwebtoken"
 import { AppError, statusCodes } from "../utils/errorhandler";
-import { error } from "console";
 const SECRET_KEY: Secret = 'secret-key';
 
 
