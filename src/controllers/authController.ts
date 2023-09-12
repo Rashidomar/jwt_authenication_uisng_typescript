@@ -8,13 +8,6 @@ export const userLogin = async(req: Request, res: Response, next: NextFunction)=
 
     try {
         const {email, password} = req.body;
-
-        if(!(email && password)){
-            return res.json({
-                "msg": "All fields are required..:)"
-            })
-        }
-
         const findUser = await User.findOne({email:email});
 
         if(!findUser){
@@ -33,7 +26,7 @@ export const userLogin = async(req: Request, res: Response, next: NextFunction)=
                 message: "Wrong Password..:)"
             }));
         }  
-        const accessToken = await createToken(findUser._id);
+        const accessToken = createToken(findUser._id);
     
         res.cookie('accessToken', accessToken);
         res.cookie('logged_in', true, {httpOnly: false});
@@ -53,7 +46,7 @@ export const userLogout = async(req: Request, res: Response, next: NextFunction)
 
     try {
         res.cookie('accessToken', "");
-        res.cookie('logged_in', false, {httpOnly: false});
+        // res.cookie('logged_in', false);
         return res.status(200).json({
            'user' : null,
            'token': "",
