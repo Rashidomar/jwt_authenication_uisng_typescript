@@ -3,14 +3,14 @@ import { AppError, statusCodes } from "../utils/errorhandler"
 import { Category } from "../models/Categories"
 
 
-export const getUsers = async(req:Request, res: Response, next :NextFunction)=>{
+export const getCategories = async(req:Request, res: Response, next :NextFunction)=>{
     try {
-        const allUsers = await Category.find({})
+        const allCategories = await Category.find({})
 
-        if(allUsers){
+        if(allCategories){
             return res.json({
                 "msg":"true",
-                "users":allUsers
+                "Categories": allCategories
             })
         }
 
@@ -27,7 +27,6 @@ export const getUsers = async(req:Request, res: Response, next :NextFunction)=>{
 
 export const addCategory  = async(req: Request, res:Response, next :NextFunction) =>
 {
-    // await connect('mongodb://127.0.0.1:27017/typescript');
     try {
         const {name, description} = req.body;
 
@@ -40,14 +39,13 @@ export const addCategory  = async(req: Request, res:Response, next :NextFunction
 
         if(newCategory){
             return res.status(201).json({
-                message: "Registration Successful", 
                 status: 'success',
                 data: newCategory
             })
         }
 
         return next(new AppError({
-            message:"Registration Failed",
+            message:"Failed....:)",
             statusCode:statusCodes.NO_CONTENT,
         }))
 
@@ -56,34 +54,33 @@ export const addCategory  = async(req: Request, res:Response, next :NextFunction
     }
  
 }
-// registerUser('Bill', 'bill@initech.com', "1234").catch(err => console.log(err));
 
 export const updateCategory = async(req: Request, res:Response, next :NextFunction) =>
 {
     try {
-        const {name, email, password} = req.body;
+        const {name, description} = req.body;
 
-        if(!(name && email)){
-            return next(new AppError({
-                message:"field is required",
-                statusCode:statusCodes.BAD_REQUEST,
-            }))
-        }
+        // if(!(name && email)){
+        //     return next(new AppError({
+        //         message:"field is required",
+        //         statusCode:statusCodes.BAD_REQUEST,
+        //     }))
+        // }
     
-        const updateUser = await Category.findOneAndUpdate(
-            {email : email},
+        const updateCategory = await Category.findOneAndUpdate(
+            {name : name},
             {name : name}
             )
     
-        console.log(updateUser)
+        console.log(updateCategory)
     
-        if(updateUser){
+        if(updateCategory){
             return res.status(201).json({
                 "message": "Update Successful"
             })
         }
         return next(new AppError({
-            message:"Registration Successful",
+            message:"Successful",
             statusCode:statusCodes.NO_CONTENT,
         }))
      
@@ -93,9 +90,6 @@ export const updateCategory = async(req: Request, res:Response, next :NextFuncti
     }
    
 }
-
-// updateUser('billy', 'bill@initech.co').catch(err => console.log(err));
-
 
 export const deleteCategory = async(req: Request, res:Response, next :NextFunction) =>
 {
@@ -109,13 +103,13 @@ export const deleteCategory = async(req: Request, res:Response, next :NextFuncti
         }))
     }
 
-    const deleteUser = await Category.findOneAndDelete(
+    const deleteCategory = await Category.findOneAndDelete(
         {email : email},
         )
 
-    console.log(deleteUser)
+    console.log(deleteCategory)
 
-    if(deleteUser){
+    if(deleteCategory){
         return res.status(201).json({
             "message": "Registration Successful"
         })
@@ -128,8 +122,6 @@ export const deleteCategory = async(req: Request, res:Response, next :NextFuncti
     } catch (error) {
         next(error)
     }
-    
- 
 }
 
 
