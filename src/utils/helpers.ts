@@ -1,14 +1,18 @@
-// import { Jwt, } from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
 
-// const createToken = (user_id: string)=>{
-//     const token = jwt.sign(
-//         { user_id: user_id},
-//         process.env.TOKEN_KEY,
-//         {
-//           expiresIn: "2h",
-//         }
-//     );
+const SECRET_KEY: Secret = 'secret-key';
 
-//     return token
-// }
+
+export const createToken =  (user_id: object)=>{
+    const token = jwt.sign(
+        { user_id: user_id},
+        SECRET_KEY,
+        {
+          expiresIn: "2h",
+        }
+    );
+
+    return token
+}
+
 
