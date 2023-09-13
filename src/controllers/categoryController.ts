@@ -2,6 +2,28 @@ import { Response, Request, NextFunction } from "express"
 import { AppError, statusCodes } from "../utils/errorhandler"
 import { Category } from "../models/Categories"
 
+export const getCategory = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const categoryId = req.params.categoryId
+
+        const foundCategory = await Category.findById(categoryId)
+
+        if(!foundCategory){
+            return res.json({
+                "status":"Failed",
+                "Category": null
+            })
+        }
+
+        return res.json({
+            "status":"success",
+            "Category": foundCategory
+        })
+
+    } catch (error: any) {
+        next(error)
+    }
+}
 
 export const getCategories = async(req:Request, res: Response, next :NextFunction)=>{
     try {
@@ -9,7 +31,7 @@ export const getCategories = async(req:Request, res: Response, next :NextFunctio
 
         if(allCategories){
             return res.json({
-                "msg":"true",
+                "message":"success",
                 "Categories": allCategories
             })
         }
