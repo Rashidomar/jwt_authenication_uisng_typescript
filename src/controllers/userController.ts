@@ -5,6 +5,20 @@ import { AppError, statusCodes } from "../utils/errorhandler"
 
 import  { User } from "../models/Users"
 
+export const getUser =async ( req:Request, res: Response, next:NextFunction) => {
+    try {
+        const userId = req.params.userId
+        const founduser = User.findById(userId)
+
+        if(!founduser){
+            return res.status(200).json({
+
+            })
+        }
+    } catch (error:any) {
+        next(error)
+    }
+}
 
 export const getUsers = async(req:Request, res: Response, next :NextFunction)=>{
     try {
