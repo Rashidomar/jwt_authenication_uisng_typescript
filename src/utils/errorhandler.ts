@@ -8,7 +8,7 @@ export enum statusCodes {
   }
 
 interface AppErrorArgs {
-    name?: string;
+    status?: string;
     statusCode: statusCodes;
     message: string;
     isOperational?: boolean;
@@ -16,14 +16,14 @@ interface AppErrorArgs {
 
 export class AppError extends Error {
 
-    public readonly name: string;
-    public readonly statusCode: statusCodes;
-    public readonly isOperational: boolean = true;
+    public status: string;
+    public statusCode: statusCodes;
+    public isOperational: boolean = true;
   
     constructor(args: AppErrorArgs) {
 
       super(args.message);
-      this.name = args.name || 'Error';
+      this.status = args.status || "Error";
       this.statusCode = args.statusCode;
 
       Object.setPrototypeOf(this, new.target.prototype);
