@@ -1,4 +1,4 @@
-import { object, string, AnyZodObject, ZodError } from "zod"
+import { object, string } from "zod"
 
 export const createUserSchema = object({
     body : object({
@@ -11,3 +11,12 @@ export const createUserSchema = object({
 
     }),
 });
+
+export const loginUserSchema = object({
+    body : object({
+        email: string({ required_error : "Email is required"}),
+        password : string({required_error : "password is required"})
+        .min(4, "Password must be more than 4 characters")
+        .max(8, "Password must be less than 8 characters")
+    })
+})
