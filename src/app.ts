@@ -1,9 +1,10 @@
-import express, { Express, Request, Response, NextFunction } from "express";
+import express, { Express, Request, Response, NextFunction } from "express"
 import { verifyToken} from "./middleware/auth"
-import userRouter from "./routes/userRoute";
+import userRouter from "./routes/userRoute"
 import authRouter from "./routes/authRoute"
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
+import categoryRouter from "./routes/categoryRoute"
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 export const app: Express = express();
 
@@ -21,6 +22,7 @@ app.get('/welcome', verifyToken, (req:Request, res:Response)=>{
 
 app.use(userRouter)
 app.use(authRouter)
+app.use(categoryRouter)
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
   const err = new Error(`Route ${req.originalUrl} not found`) as any;
