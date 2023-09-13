@@ -13,11 +13,6 @@ export const getCategories = async(req:Request, res: Response, next :NextFunctio
                 "Categories": allCategories
             })
         }
-
-        return next(new AppError({
-            message:"An error occured..",
-            statusCode:statusCodes.NO_CONTENT,
-        }))
         
     } catch (error: any ) {
         next(error)
@@ -44,11 +39,6 @@ export const addCategory  = async(req: Request, res:Response, next :NextFunction
             })
         }
 
-        return next(new AppError({
-            message:"Failed....:)",
-            statusCode:statusCodes.NO_CONTENT,
-        }))
-
     } catch (error : any) {
         next(error)
     }
@@ -59,13 +49,6 @@ export const updateCategory = async(req: Request, res:Response, next :NextFuncti
 {
     try {
         const {name, description} = req.body;
-
-        // if(!(name && email)){
-        //     return next(new AppError({
-        //         message:"field is required",
-        //         statusCode:statusCodes.BAD_REQUEST,
-        //     }))
-        // }
     
         const updateCategory = await Category.findOneAndUpdate(
             {name : name},
@@ -114,10 +97,6 @@ export const deleteCategory = async(req: Request, res:Response, next :NextFuncti
             "message": "Registration Successful"
         })
     }
-    return next(new AppError({
-        message:"Registration Successful",
-        statusCode:statusCodes.NO_CONTENT,
-    }))
         
     } catch (error) {
         next(error)
