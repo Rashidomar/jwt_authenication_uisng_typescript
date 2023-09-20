@@ -1,6 +1,5 @@
 import { Response, Request, NextFunction } from "express"
 import bcrypt from "bcrypt"
-import { AppError, statusCodes } from "../utils/errorhandler"
 // import { connect } from 'mongoose';
 
 import  { User } from "../models/Users"
@@ -11,10 +10,15 @@ export const getUser =async ( req:Request, res: Response, next:NextFunction) => 
         const founduser = User.findById(userId)
 
         if(!founduser){
-            return res.status(200).json({
-
+            return res.status(204).json({
+                status:"failed",
+                data:null
             })
         }
+        return res.status(200).json({
+            status:"success",
+            data:founduser
+        })
     } catch (error:any) {
         next(error)
     }
@@ -25,9 +29,9 @@ export const getUsers = async(req:Request, res: Response, next :NextFunction)=>{
         const allUsers = await User.find({})
 
         if(allUsers){
-            return res.json({
-                "msg":"true",
-                "users":allUsers
+            return res.status(200).json({
+                status:"success",
+                data:allUsers
             })
         }
         

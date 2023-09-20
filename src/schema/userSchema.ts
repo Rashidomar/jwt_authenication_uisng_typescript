@@ -17,7 +17,6 @@ export const updateUserSchema = object({
     body : object({
         name: string({ required_error: "Name is required" })
         .min(4, "Name must be more than 4 characters")
-        ,
     }),
 });
 

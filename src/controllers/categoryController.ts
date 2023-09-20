@@ -70,12 +70,11 @@ export const addCategory  = async(req: Request, res:Response, next :NextFunction
 export const updateCategory = async(req: Request, res:Response, next :NextFunction) =>
 {
     try {
-        const {name, description} = req.body;
-    
-        const updateCategory = await Category.findOneAndUpdate(
-            {name : name},
-            {name : name}
-            )
+        const categoryId = req.params.categoryId
+
+        const { name, description } = req.body;
+
+        const updateCategory = await Category.findByIdAndUpdate(categoryId,{name : name, description : description})
     
         console.log(updateCategory)
     
@@ -99,30 +98,22 @@ export const updateCategory = async(req: Request, res:Response, next :NextFuncti
 export const deleteCategory = async(req: Request, res:Response, next :NextFunction) =>
 {
     try {
-        const {email} = req.body;
 
-    if(!(email)){
-        return next(new AppError({
-            message:"All fields are required",
-            statusCode:statusCodes.BAD_REQUEST,
-        }))
-    }
+        const categoryId = req.params.categoryId
 
-    const deleteCategory = await Category.findOneAndDelete(
-        {email : email},
-        )
+        const deleteCategory = await Category.findByIdAndDelete(categoryId)
 
-    console.log(deleteCategory)
+        console.log(deleteCategory)
 
-    if(deleteCategory){
-        return res.status(201).json({
-            "message": "Registration Successful"
-        })
-    }
-        
-    } catch (error) {
-        next(error)
-    }
+        if(deleteCategory){
+            return res.status(201).json({
+                "message": "Registration Successful"
+            })
+        }
+          
+        } catch (error) {
+            next(error)
+        }
 }
 
 
