@@ -8,16 +8,9 @@ export const getCategory = async (req: Request, res: Response, next: NextFunctio
 
         const foundCategory = await Category.findById(categoryId)
 
-        if(!foundCategory){
-            return res.json({
-                "status":"Failed",
-                "Category": null
-            })
-        }
-
         return res.json({
-            "status":"success",
-            "Category": foundCategory
+            status:"success",
+            data: foundCategory
         })
 
     } catch (error: any) {
@@ -31,8 +24,8 @@ export const getCategories = async(req:Request, res: Response, next :NextFunctio
 
         if(allCategories){
             return res.json({
-                "message":"success",
-                "Categories": allCategories
+                status:"success",
+                data: allCategories
             })
         }
         
@@ -80,7 +73,8 @@ export const updateCategory = async(req: Request, res:Response, next :NextFuncti
     
         if(updateCategory){
             return res.status(201).json({
-                "message": "Update Successful"
+                status: "success",
+                message: "Update Successful"
             })
         }
         return next(new AppError({
@@ -107,7 +101,8 @@ export const deleteCategory = async(req: Request, res:Response, next :NextFuncti
 
         if(deleteCategory){
             return res.status(201).json({
-                "message": "Registration Successful"
+                status: "success",
+                message: "Delete Successful"
             })
         }
           

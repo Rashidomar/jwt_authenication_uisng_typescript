@@ -24,7 +24,7 @@ const schemaProduct = new Schema<IProduct>({
         required: true,
     },
     quantity: {
-        type: Number , 
+        type: Number, 
         require:true
     },
 

@@ -85,7 +85,8 @@ export const updateUser = async(req: Request, res:Response, next :NextFunction) 
     
         if(updateUser){
             return res.status(201).json({
-                "message": "Update Successful"
+                status: "success",
+                message: "Update Successful"
             })
         }        
     } catch (error:any) {
@@ -104,7 +105,8 @@ export const deleteUser = async(req: Request, res:Response, next :NextFunction) 
 
     if(deleteUser){
         return res.status(201).json({
-            "message": "User deleted Successful"
+            status: "success",
+            message: "User deleted Successful"
         })
     }      
     } catch (error) {
