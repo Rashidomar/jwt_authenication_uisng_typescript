@@ -1,19 +1,37 @@
 import { Response, Request, NextFunction } from "express"
 import bcrypt from "bcrypt"
-import { AppError, statusCodes } from "../utils/errorhandler"
 // import { connect } from 'mongoose';
 
 import  { User } from "../models/Users"
 
+export const getUser =async ( req:Request, res: Response, next:NextFunction) => {
+    try {
+        const userId = req.params.userId
+        const founduser = User.findById(userId)
+
+        if(!founduser){
+            return res.status(204).json({
+                status:"failed",
+                data:null
+            })
+        }
+        return res.status(200).json({
+            status:"success",
+            data:founduser
+        })
+    } catch (error:any) {
+        next(error)
+    }
+}
 
 export const getUsers = async(req:Request, res: Response, next :NextFunction)=>{
     try {
         const allUsers = await User.find({})
 
         if(allUsers){
-            return res.json({
-                "msg":"true",
-                "users":allUsers
+            return res.status(200).json({
+                status:"success",
+                data:allUsers
             })
         }
         
@@ -67,7 +85,8 @@ export const updateUser = async(req: Request, res:Response, next :NextFunction) 
     
         if(updateUser){
             return res.status(201).json({
-                "message": "Update Successful"
+                status: "success",
+                message: "Update Successful"
             })
         }        
     } catch (error:any) {
@@ -86,7 +105,8 @@ export const deleteUser = async(req: Request, res:Response, next :NextFunction) 
 
     if(deleteUser){
         return res.status(201).json({
-            "message": "User deleted Successful"
+            status: "success",
+            message: "User deleted Successful"
         })
     }      
     } catch (error) {

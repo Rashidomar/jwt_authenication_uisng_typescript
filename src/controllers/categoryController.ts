@@ -8,16 +8,9 @@ export const getCategory = async (req: Request, res: Response, next: NextFunctio
 
         const foundCategory = await Category.findById(categoryId)
 
-        if(!foundCategory){
-            return res.json({
-                "status":"Failed",
-                "Category": null
-            })
-        }
-
         return res.json({
-            "status":"success",
-            "Category": foundCategory
+            status:"success",
+            data: foundCategory
         })
 
     } catch (error: any) {
@@ -31,8 +24,8 @@ export const getCategories = async(req:Request, res: Response, next :NextFunctio
 
         if(allCategories){
             return res.json({
-                "message":"success",
-                "Categories": allCategories
+                status:"success",
+                data: allCategories
             })
         }
         
@@ -70,18 +63,18 @@ export const addCategory  = async(req: Request, res:Response, next :NextFunction
 export const updateCategory = async(req: Request, res:Response, next :NextFunction) =>
 {
     try {
-        const {name, description} = req.body;
-    
-        const updateCategory = await Category.findOneAndUpdate(
-            {name : name},
-            {name : name}
-            )
+        const categoryId = req.params.categoryId
+
+        const { name, description } = req.body;
+
+        const updateCategory = await Category.findByIdAndUpdate(categoryId,{name : name, description : description})
     
         console.log(updateCategory)
     
         if(updateCategory){
             return res.status(201).json({
-                "message": "Update Successful"
+                status: "success",
+                message: "Update Successful"
             })
         }
         return next(new AppError({
@@ -99,30 +92,23 @@ export const updateCategory = async(req: Request, res:Response, next :NextFuncti
 export const deleteCategory = async(req: Request, res:Response, next :NextFunction) =>
 {
     try {
-        const {email} = req.body;
 
-    if(!(email)){
-        return next(new AppError({
-            message:"All fields are required",
-            statusCode:statusCodes.BAD_REQUEST,
-        }))
-    }
+        const categoryId = req.params.categoryId
 
-    const deleteCategory = await Category.findOneAndDelete(
-        {email : email},
-        )
+        const deleteCategory = await Category.findByIdAndDelete(categoryId)
 
-    console.log(deleteCategory)
+        console.log(deleteCategory)
 
-    if(deleteCategory){
-        return res.status(201).json({
-            "message": "Registration Successful"
-        })
-    }
-        
-    } catch (error) {
-        next(error)
-    }
+        if(deleteCategory){
+            return res.status(201).json({
+                status: "success",
+                message: "Delete Successful"
+            })
+        }
+          
+        } catch (error) {
+            next(error)
+        }
 }
 
 

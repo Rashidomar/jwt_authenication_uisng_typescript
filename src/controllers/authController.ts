@@ -31,8 +31,8 @@ export const userLogin = async(req: Request, res: Response, next: NextFunction)=
         res.cookie('accessToken', accessToken);
         res.cookie('logged_in', true, {httpOnly: false});
         return res.status(200).json({
-           'user' : findUser,
-           'token': accessToken,
+           user : findUser,
+           token: accessToken,
         });
 
         
