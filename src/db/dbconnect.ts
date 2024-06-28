@@ -6,9 +6,8 @@ const database = 'typescript'          // REPLACE WITH YOUR OWN DB NAME
 export const connectDB = async () => {
   try {
     await mongoose.connect(`mongodb://${server}/${database}`)
-    console.log('MongoDB connected!!')
-  } catch (err) {
-    console.log('Failed to connect to MongoDB', err)
+  }catch (err) {
+    return err
   }
 }
 
