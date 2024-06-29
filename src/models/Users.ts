@@ -1,12 +1,4 @@
 import { Schema, model } from 'mongoose';
-
-// enum UserTypes {
-//     Pharmacy,
-//     Newsletter,
-//     Magazine,
-//     Book
-//   }
-
 interface IUser {
     name: string;
     email: string;

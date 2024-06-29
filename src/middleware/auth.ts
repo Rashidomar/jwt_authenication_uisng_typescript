@@ -7,14 +7,14 @@ const SECRET_KEY: Secret = 'secret-key';
 export const verifyToken = (req: Request, res: Response, next: NextFunction)=>{
 
     try {
-        let access_token 
+        let access_token = null
         if ( req.headers.authorization && req.headers.authorization.startsWith('Bearer') ) {
             access_token = req.headers.authorization.split(' ')[1];
           } else if (req.cookies.accessToken) {
             access_token = req.cookies.accessToken;
           }
 
-        if (!access_token) {
+        if (access_token === null) {
             return next(new AppError({
               message: "You are not logged in",
               statusCode:statusCodes.UNAUTHORIZED
